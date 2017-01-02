@@ -1,0 +1,2 @@
+#ignore MacOS X configuration files
+*.DS_Store

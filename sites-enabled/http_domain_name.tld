@@ -1,0 +1,39 @@
+server {
+  # don't forget to tell on which port this server listens
+  listen 80;
+  listen [::]:80;
+
+  # listen on the www host
+  server_name www.domain_name;
+
+  # and redirect to the non-www host (declared below)
+  return 301 $scheme://domain_name$request_uri;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+
+  # The host name to respond to
+  server_name domain_name;
+
+  # Remove HTML extension & trailing slash
+  rewrite ^(/.*)\.html(\?.*)?$ $1$2 permanent;
+  rewrite ^/(.*)/$ /$1 permanent;
+
+  # Path for static files
+  root /var/www/eu/;
+  index index.html;
+  try_files $uri/index.html $uri.html $uri/ $uri =404;
+
+  # Specify a charset
+  charset utf-8;
+
+  # Custom 404 page
+  error_page 404 /404.html;
+
+  # Include the basic h5bp config set
+  include /etc/nginx/snippets/x-ua-compatible.conf;
+  include /etc/nginx/snippets/expires.conf;
+  include /etc/nginx/snippets/protect-system-files.conf;
+}
